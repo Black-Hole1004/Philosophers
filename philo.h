@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:45:11 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/01 19:16:11 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/01 22:35:47 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <pthread.h>
-
+# include <limits.h>
 typedef struct s_list
 {
 	void			*content;
@@ -31,5 +31,5 @@ void	ft_lstclear(t_list **lst, void (*del)(void *));
 void	ft_lstdelone(t_list *lst, void (*del)(void*));
 t_list	*ft_lstnew(void *content);
 int		ft_lstsize(t_list *lst);
-int		pars(char **argv);
+int		pars(int argc, char **argv);
 #endif

@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:47:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/01 19:41:36 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/01 22:33:58 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void *thread_func(void *arg) {
 
 int main(int argc, char **argv)
 {
-    if (argc > 6 || pars(argv) == -1)
+    if (argc < 5 || argc > 6 || pars(argc, argv) == -1)
     {
         write(1, "You didn't provide the right arguments\n", 40);
         return (0);
