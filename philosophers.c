@@ -6,19 +6,11 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:40:49 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/01 22:41:52 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/08 19:13:21 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-int	is_whitespace(char c)
-{
-	if (c == '\t' || c == '\n' || c == '\v' || c == '\f'
-		|| c == '\r' || c == ' ')
-		return (1);
-	return (0);
-}
 
 int	ft_atoi(const char *str)
 {
@@ -27,7 +19,7 @@ int	ft_atoi(const char *str)
 
 	result = 0;
     i = 0;
-	while (is_whitespace(*str))
+	while (*str == ' ')
 		str++;
 	if (*str && (*str == '-' || *str == '+'))
 	{
@@ -60,4 +52,57 @@ int pars(int argc, char **argv)
         if (ft_atoi(argv[i]) < 0)
             return (-1);
     return (0);
+}
+
+t_list	*new_thread(t_info *info, int i)
+{
+	pthread_t	thread;
+	t_list		*new;
+
+	new = ft_lstnew(&thread);
+	new->info = info;
+	new->index = i;
+	if (pthread_create(&thread, NULL, thread_func, (void *)new) != 0)
+		return (NULL);
+	return (new);
+}
+
+t_list	*new_mutex(t_info *info, int i)
+{
+	pthread_mutex_t	mutex;
+	t_list			*new;
+
+	pthread_mutex_init(&mutex, NULL);
+	new = ft_lstnew(&mutex);
+	new->info = info;
+	new->index = i;
+	return (new);
+}
+
+t_list	*get_list(t_list *list, t_info *info)
+{
+	int	i;
+
+	i = 0;
+	list = new_thread(info, 1);
+	while (++i < info->philo_num)
+		ft_lstadd_back(&list, new_thread(info, i+1));
+	return (list);
+}
+
+void	init_info(int argc, char **argv, t_info *info, t_list *philos)
+{
+	int	i;
+	(void)philos;
+
+	i = -1;
+	info->philo_num = ft_atoi(argv[1]);
+	info->time_to_die = ft_atoi(argv[2]);
+	info->time_to_eat = ft_atoi(argv[3]);
+	info->time_to_sleep = ft_atoi(argv[4]);
+	if (argc == 6)
+		info->time_eats = ft_atoi(argv[5]);
+	info->mutex = malloc (info->philo_num * sizeof(pthread_mutex_t));
+	while (++i < info->philo_num)
+		pthread_mutex_init(&info->mutex[i], NULL);
 }
