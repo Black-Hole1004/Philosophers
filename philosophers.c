@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:40:49 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/08 19:13:21 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/10 15:26:33 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ t_list	*new_mutex(t_info *info, int i)
 
 	pthread_mutex_init(&mutex, NULL);
 	new = ft_lstnew(&mutex);
+	new->num_eats = 0;
 	new->info = info;
 	new->index = i;
 	return (new);
@@ -90,9 +91,10 @@ t_list	*get_list(t_list *list, t_info *info)
 	return (list);
 }
 
-void	init_info(int argc, char **argv, t_info *info, t_list *philos)
+int	init_info(int argc, char **argv, t_info *info, t_list *philos)
 {
-	int	i;
+	int				i;
+	
 	(void)philos;
 
 	i = -1;
@@ -102,7 +104,13 @@ void	init_info(int argc, char **argv, t_info *info, t_list *philos)
 	info->time_to_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
 		info->time_eats = ft_atoi(argv[5]);
+	info->t0 = get_time_ms();
+	info->stop = 0;
+	info->eats = 0;
 	info->mutex = malloc (info->philo_num * sizeof(pthread_mutex_t));
+	if (!info->mutex)
+		return (0);
 	while (++i < info->philo_num)
 		pthread_mutex_init(&info->mutex[i], NULL);
+	return (1);
 }

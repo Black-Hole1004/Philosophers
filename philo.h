@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:45:11 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/08 15:58:57 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/10 15:05:15 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <limits.h>
+# include <stdbool.h>
 # include <sys/time.h>
 
 typedef struct s_info
@@ -27,6 +28,9 @@ typedef struct s_info
 	int				time_to_die;
 	int				time_to_sleep;
 	int				time_eats;
+	size_t			t0;
+	bool			stop;
+	int				eats;
 	pthread_mutex_t	*mutex;
 }			t_info;
 
@@ -40,10 +44,11 @@ typedef struct s_list
 }			t_list;
 
 void	*thread_func(void *thread);
+size_t	get_time_ms();
 t_list	*new_mutex(t_info *info, int i);
 t_list	*new_thread(t_info *info, int i);
 t_list	*get_list(t_list *list, t_info *info);
-void	init_info(int argc, char **argv, t_info *info, t_list *philos);
+int	init_info(int argc, char **argv, t_info *info, t_list *philos);
 void	ft_lstadd_front(t_list **lst, t_list *new);
 void	ft_lstadd_back(t_list **lst, t_list *new);
 t_list	*ft_lstlast(t_list *lst);
