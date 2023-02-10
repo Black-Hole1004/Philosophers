@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:47:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/10 16:35:40 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/10 20:45:25 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,48 +23,53 @@ size_t	get_time_ms(void)
 void *thread_func(void	*threads)
 {
 	t_list 			*thread;
+	// struct timespec sleepTime;
+
 	// struct timeval	t;
 	// struct timeval	t2;
 	size_t	t1;
 	size_t	t2;
+	int		mutex;
 
 	thread = (t_list *)threads;
+	if (thread->info->stop || thread->info->philo_num == 1)
+		return (printf("philo num : 1 died\n"),
+				thread->info->stop = 1, NULL);
 	t1 = get_time_ms();
-	if (thread->info->stop)
-		return (NULL);
 	if (thread->index % 2)
-		usleep(500);
+		usleep(100);
+	// printf("beginnig : %zu\n", t1-thread->info->t0);
 	while (1)
 	{
-		if (pthread_mutex_lock(&thread->info->mutex[thread->index - 1]))
+		if (thread->index == thread->info->philo_num)
+			mutex = 0;
+		else
+			mutex = thread->index - 1;
+		// printf("mutex %d mutex_next %d\n", mutex,mutex + 1);
+		if (!pthread_mutex_lock(&thread->info->mutex[mutex])
+			&& !pthread_mutex_lock(&thread->info->mutex[mutex + 1]))
 		{
-			thread->info->stop = 1;
-			return (printf("philo num : 1 died\n"), NULL);
+			t2 = get_time_ms();
+			if ((int)(t2 - t1) > thread->info->time_to_die)
+				return (printf("philo num : %d died\n", thread->index),
+				thread->info->stop = 1, NULL);
+			printf("philo num: %d has taken a fork\n", thread->index);
+			printf("philo num: %d is eating\n", thread->index);
+			t1 = t2;
+			usleep(thread->info->time_to_eat * 1000);
+			thread->num_eats++;
+			printf("philo num: %d is sleeping\n", thread->index);
+			pthread_mutex_unlock(&thread->info->mutex[mutex]);
+			pthread_mutex_unlock(&thread->info->mutex[mutex + 1]);
+			usleep(thread->info->time_to_sleep * 1000);
+			printf("philo num: %d is thinking\n", thread->index);
 		}
-		if (pthread_mutex_lock(&thread->info->mutex[thread->index]))
-		{
-			thread->info->stop = 1;
-		printf("sui\n");
-			return(printf("philo num : 1 died\n"), NULL);
-		}
-		printf("philo num: %d has taken a fork\n", thread->index);
-		t2 = get_time_ms();
-		if ((int)(t2 - t1) >= thread->info->time_to_die)
-		{
-			printf("philo num : %d died\n", thread->index);
-			// printf("t2 %lu ms t %ld diff %lu time_to_die %dms\n", t2,  t1, t2-t1, thread->info->time_to_die);
-			thread->info->stop = 1;
-			return NULL;
-		}
-		printf("philo num: %d is eating\n", thread->index);
-		usleep(thread->info->time_to_eat * 1000);
-		t1 = get_time_ms();
-		thread->num_eats++;
-		pthread_mutex_unlock(&thread->info->mutex[thread->index - 1]);
-		pthread_mutex_unlock(&thread->info->mutex[thread->index]);
-		printf("philo num: %d is sleeping\n", thread->index);
-		usleep(thread->info->time_to_sleep * 1000);
-		printf("philo num: %d is thinking\n", thread->index);
+		// else
+		// {
+		// 	printf("philo num : %d died\n", thread->index);
+		// 	thread->info->stop = 1;
+		// 	break ;
+		// }
 	}
 	return NULL;
 }
