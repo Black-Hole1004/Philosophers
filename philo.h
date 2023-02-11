@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:45:11 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/11 17:26:22 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/11 19:01:00 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,11 @@ typedef struct s_list
 
 void	*thread_func(void *thread);
 size_t	get_time_ms();
-t_list	*new_mutex(t_info *info, int i);
+int		time_diff(size_t t0);
+bool	check_eats(t_info *info, t_list *philos);
+void	destroy(t_list	**temp, t_info *info);
+void	my_usleep(size_t time);
+int		loop(t_list *temp, t_info info);
 t_list	*new_thread(t_info *info, int i);
 t_list	*get_list(t_list *list, t_info *info);
 int		init_info(int argc, char **argv, t_info *info);
