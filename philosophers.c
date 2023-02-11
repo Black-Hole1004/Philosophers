@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:40:49 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/10 15:26:33 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/11 17:31:05 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,21 +62,13 @@ t_list	*new_thread(t_info *info, int i)
 	new = ft_lstnew(&thread);
 	new->info = info;
 	new->index = i;
+	new->dead = 0;
+	new->last_eat = info->t0;
+	new->num_eats = 0;
+	if (pthread_mutex_init(&new->mutex, NULL))
+		return (NULL);
 	if (pthread_create(&thread, NULL, thread_func, (void *)new) != 0)
 		return (NULL);
-	return (new);
-}
-
-t_list	*new_mutex(t_info *info, int i)
-{
-	pthread_mutex_t	mutex;
-	t_list			*new;
-
-	pthread_mutex_init(&mutex, NULL);
-	new = ft_lstnew(&mutex);
-	new->num_eats = 0;
-	new->info = info;
-	new->index = i;
 	return (new);
 }
 
@@ -91,26 +83,20 @@ t_list	*get_list(t_list *list, t_info *info)
 	return (list);
 }
 
-int	init_info(int argc, char **argv, t_info *info, t_list *philos)
+int	init_info(int argc, char **argv, t_info *info)
 {
-	int				i;
-	
-	(void)philos;
-
-	i = -1;
 	info->philo_num = ft_atoi(argv[1]);
 	info->time_to_die = ft_atoi(argv[2]);
 	info->time_to_eat = ft_atoi(argv[3]);
 	info->time_to_sleep = ft_atoi(argv[4]);
 	if (argc == 6)
-		info->time_eats = ft_atoi(argv[5]);
+	{
+		if (!(info->time_eats = ft_atoi(argv[5])))
+			return (0);
+	}
+	else
+		info->time_eats = -1;
 	info->t0 = get_time_ms();
 	info->stop = 0;
-	info->eats = 0;
-	info->mutex = malloc (info->philo_num * sizeof(pthread_mutex_t));
-	if (!info->mutex)
-		return (0);
-	while (++i < info->philo_num)
-		pthread_mutex_init(&info->mutex[i], NULL);
 	return (1);
 }
