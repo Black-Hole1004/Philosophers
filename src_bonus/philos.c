@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.c                                     :+:      :+:    :+:   */
+/*   philos.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/31 17:40:49 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/15 18:52:44 by ahmaymou         ###   ########.fr       */
+/*   Created: 2023/02/14 18:54:23 by ahmaymou          #+#    #+#             */
+/*   Updated: 2023/02/15 19:28:59 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,50 +54,42 @@ int	pars(int argc, char **argv)
 	return (0);
 }
 
-t_list	*new_thread(t_info *info, int i)
+void	my_usleep(size_t time)
 {
-	pthread_t	thread;
-	t_list		*new;
+	size_t	now;
 
-	new = ft_lstnew(&thread);
-	new->info = info;
-	new->index = i;
-	new->dead = 0;
-	new->last_eat = info->t0;
-	new->num_eats = 0;
-	if (pthread_mutex_init(&new->mutex, NULL))
-		return (NULL);
-	if (pthread_create(&thread, NULL, thread_func, (void *)new) != 0)
-		return (NULL);
-	return (new);
-}
-
-t_list	*get_list(t_list *list, t_info *info)
-{
-	int	i;
-
-	i = 0;
-	list = new_thread(info, 1);
-	while (++i < info->philo_num)
-		ft_lstadd_back(&list, new_thread(info, i + 1));
-	return (list);
-}
-
-int	init_info(int argc, char **argv, t_info *info)
-{
-	info->philo_num = ft_atoi(argv[1]);
-	info->time_to_die = ft_atoi(argv[2]);
-	info->time_to_eat = ft_atoi(argv[3]);
-	info->time_to_sleep = ft_atoi(argv[4]);
-	if (argc == 6)
+	now = get_time_ms();
+	while (1)
 	{
-		info->time_eats = ft_atoi(argv[5]);
-		if (!(info->time_eats))
-			return (0);
+		if ((get_time_ms() - now) >= time)
+			break ;
+		usleep(15);
 	}
-	else
-		info->time_eats = -1;
-	info->t0 = get_time_ms();
-	info->stop = 0;
-	return (1);
+}
+
+void	*routine(void *info)
+{
+	t_info	*infos;
+
+	infos = (t_info *)info;
+	while (1)
+	{
+		sem_wait(infos->semaphores);
+		sem_wait(infos->semaphores);
+		printf("%dms philo num: %d has taken a fork\n",
+			time_diff(infos->t0), infos->index);
+		printf("%dms philo num: %d is eating\n",
+			time_diff(infos->t0), infos->index);
+		infos->last_eat = get_time_ms();
+		my_usleep(infos->time_to_eat);
+		sem_post(infos->semaphores);
+		sem_post(infos->semaphores);
+		infos->num_eats++;
+		printf("%dms philo num: %d is sleeping\n",
+			time_diff(infos->t0), infos->index);
+		my_usleep(infos->time_to_sleep);
+		printf("%dms philo num: %d is thinking\n",
+			time_diff(infos->t0), infos->index);
+	}
+	return (NULL);
 }

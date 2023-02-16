@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 17:24:17 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/01 19:04:59 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/15 19:00:03 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,10 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 {
 	t_list	*temp;
 
-	new->next = *lst;
-	temp = *lst;
 	if (!new)
 		return ;
 	new->next = *lst;
+	temp = *lst;
 	if ((*lst))
 	{
 		while (1)
@@ -67,3 +66,8 @@ t_list	*ft_lstlast(t_list *lst)
 	return (temp);
 }
 
+void	put_forks(t_list *thread)
+{
+	pthread_mutex_unlock(&thread->mutex);
+	pthread_mutex_unlock(&thread->next->mutex);
+}

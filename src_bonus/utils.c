@@ -5,16 +5,16 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/02/11 18:56:45 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/11 18:58:43 by ahmaymou         ###   ########.fr       */
+/*   Created: 2023/02/14 18:58:13 by ahmaymou          #+#    #+#             */
+/*   Updated: 2023/02/16 14:58:03 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "philo.h"
+#include "philo.h"
 
 size_t	get_time_ms(void)
 {
-	struct timeval time;
+	struct timeval	time;
 
 	gettimeofday(&time, NULL);
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
@@ -25,60 +25,67 @@ int	time_diff(size_t t0)
 	size_t	t;
 
 	t = get_time_ms();
-	return (t-t0);
+	return (t - t0);
 }
 
-void *thread_func(void	*threads)
+int	init_info(int argc, char **argv, t_info *info)
 {
-	t_list 			*thread;
+	info->philo_num = ft_atoi(argv[1]);
+	info->time_to_die = ft_atoi(argv[2]);
+	info->time_to_eat = ft_atoi(argv[3]);
+	info->time_to_sleep = ft_atoi(argv[4]);
+	if (argc == 6)
+	{
+		info->time_eats = ft_atoi(argv[5]);
+		if (!(info->time_eats))
+			return (0);
+	}
+	else
+		info->time_eats = -1;
+	info->t0 = get_time_ms();
+	info->last_eat = info->t0;
+	sem_unlink("sem");
+	info->semaphores = sem_open("sem", O_CREAT, 0644, info->philo_num);
+	return (1);
+}
 
-	thread = (t_list *)threads;
-	if (thread->index % 2)
-		usleep(100);
+int	loop(t_info *info)
+{
 	while (1)
 	{
-		pthread_mutex_lock(&thread->mutex);
-		pthread_mutex_lock(&thread->next->mutex);
-		if (thread->info->stop)
-			return (NULL);
-		printf("%dms philo num: %d has taken a fork\n", time_diff(thread->info->t0), thread->index);
-		printf("%dms philo num: %d is eating\n", time_diff(thread->info->t0), thread->index);
-		thread->last_eat = get_time_ms();
-		my_usleep(thread->info->time_to_eat);
-		pthread_mutex_unlock(&thread->mutex);
-		pthread_mutex_unlock(&thread->next->mutex);
-		thread->num_eats++;
-		printf("%dms philo num: %d is sleeping\n", time_diff(thread->info->t0), thread->index);
-		my_usleep(thread->info->time_to_sleep);
-		printf("%dms philo num: %d is thinking\n", time_diff(thread->info->t0), thread->index);
+		if ((int)(get_time_ms() - info->last_eat) >= info->time_to_die)
+		{
+			printf("%dms philo num : %d died\n",
+				time_diff(info->t0), info->index);
+			exit (DIED);
+		}
+		else if (info->time_eats != -1 && info->num_eats == info->time_eats)
+			exit (FINISHED_EATING);
 	}
-	return NULL;
 }
 
-bool	check_eats(t_info *info, t_list *philos)
+void	create_processes(t_info *info)
 {
-	int i;
+	pid_t	pid;
+	int		i;
 
 	i = -1;
 	while (++i < info->philo_num)
 	{
-		if (philos->num_eats < info->time_eats)
-			return (false);
-		philos = philos->next;
-	}
-	return (true);
-}
-
-void	destroy(t_list	**temp, t_info *info)
-{
-	int	i;
-
-	i = -1;
-	while (++i < info->philo_num)
-	{
-		if (pthread_mutex_destroy(&(*temp)->mutex))
+		pid = fork();
+		if (pid == -1)
+		{
+			printf("Error creating process\n");
 			return ;
-		(*temp) = (*temp)->next;
+		}
+		else if (pid == 0)
+		{
+			info->index = i + 1;
+			if (pthread_create(&info->thread, NULL, routine, (void *)info))
+				return ;
+			if (pthread_detach(info->thread))
+				return ;
+			loop(info);
+		}
 	}
-	ft_lstclear(temp);
 }

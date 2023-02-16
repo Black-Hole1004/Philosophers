@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:47:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/11 19:04:43 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/15 18:54:08 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void	my_usleep(size_t time)
 {
-	size_t now;
+	size_t	now;
 
 	now = get_time_ms();
 	while (1)
@@ -30,10 +30,9 @@ void	my_usleep(size_t time)
 // 	system("leaks philo | grep total");
 // }
 
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	t_info  info;
-	// t_list  philos;
+	t_info	info;
 	t_list	philos;
 	int		i;
 
@@ -44,9 +43,8 @@ int main(int argc, char **argv)
 	}
 	if (!init_info(argc, argv, &info))
 		return (0);
-	// atexit(leaks);
 	philos = *get_list(&philos, &info);
 	i = 0;
 	loop(&philos, info);
-	return 0;
+	return (0);
 }

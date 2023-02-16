@@ -6,36 +6,48 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:47:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/11 19:04:43 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/16 14:44:12 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	my_usleep(size_t time)
+void	leaks(void)
 {
-	size_t now;
+	system("leaks philo_bonus");
+}
 
-	now = get_time_ms();
+void	loop_wait(t_info info)
+{
+	short	eats;
+	int		status;
+
+	eats = 0;
 	while (1)
 	{
-		if ((get_time_ms() - now) >= time)
-			break ;
+		if (eats == info.time_eats)
+		{
+			printf("All philosophers ate %d times\n", info.time_eats);
+			sem_close(info.semaphores);
+			sem_unlink("sem");
+			kill(0, SIGINT);
+		}
+		waitpid(-1, &status, 0);
+		if (WEXITSTATUS(status) == DIED)
+		{
+			sem_close(info.semaphores);
+			sem_unlink("sem");
+			kill(0, SIGINT);
+		}
+		else if (WEXITSTATUS(status) == FINISHED_EATING)
+			eats++;
 		usleep(15);
 	}
 }
 
-// void leaks()
-// {
-// 	system("leaks philo | grep total");
-// }
-
-int main(int argc, char **argv)
+int	main(int argc, char **argv)
 {
-	t_info  info;
-	// t_list  philos;
-	t_list	philos;
-	int		i;
+	t_info	info;
 
 	if (argc < 5 || argc > 6 || pars(argc, argv) == -1)
 	{
@@ -44,9 +56,8 @@ int main(int argc, char **argv)
 	}
 	if (!init_info(argc, argv, &info))
 		return (0);
-	// atexit(leaks);
-	philos = *get_list(&philos, &info);
-	i = 0;
-	loop(&philos, info);
-	return 0;
+	create_processes(&info);
+	atexit(leaks);
+	loop_wait(info);
+	return (0);
 }

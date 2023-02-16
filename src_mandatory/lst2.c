@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 17:24:22 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/11 19:00:18 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/15 18:59:37 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,16 +69,23 @@ int	loop(t_list *temp, t_info info)
 		if ((int)(get_time_ms() - temp->last_eat) >= info.time_to_die)
 		{
 			info.stop = 1;
-			printf("%dms philo num : %d died\n", time_diff(info.t0), temp->index);
+			printf("%dms philo num : %d died\n",
+				time_diff(info.t0), temp->index);
 			return (destroy(&temp, &info), 0);
 		}
 		else if (info.time_eats != -1 && check_eats(&info, temp))
 		{
 			info.stop = 1;
 			usleep(100);
-			printf("All philosophers ate\n");
+			printf("All philosophers ate %d times\n", info.time_eats);
 			return (destroy(&temp, &info), 0);
 		}
 		temp = temp->next;
 	}
+}
+
+void	take_forks(t_list *thread)
+{
+	pthread_mutex_lock(&thread->mutex);
+	pthread_mutex_lock(&thread->next->mutex);
 }
