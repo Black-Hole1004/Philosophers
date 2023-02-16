@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 18:54:23 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/15 19:28:59 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/16 18:40:41 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	my_usleep(size_t time)
 	{
 		if ((get_time_ms() - now) >= time)
 			break ;
-		usleep(15);
+		usleep(30);
 	}
 }
 
@@ -72,24 +72,14 @@ void	*routine(void *info)
 	t_info	*infos;
 
 	infos = (t_info *)info;
+	if (infos->index % 2)
+		usleep(100);
 	while (1)
 	{
-		sem_wait(infos->semaphores);
-		sem_wait(infos->semaphores);
-		printf("%dms philo num: %d has taken a fork\n",
-			time_diff(infos->t0), infos->index);
-		printf("%dms philo num: %d is eating\n",
-			time_diff(infos->t0), infos->index);
+		take_fork(infos);
 		infos->last_eat = get_time_ms();
-		my_usleep(infos->time_to_eat);
-		sem_post(infos->semaphores);
-		sem_post(infos->semaphores);
 		infos->num_eats++;
-		printf("%dms philo num: %d is sleeping\n",
-			time_diff(infos->t0), infos->index);
-		my_usleep(infos->time_to_sleep);
-		printf("%dms philo num: %d is thinking\n",
-			time_diff(infos->t0), infos->index);
+		put_fork(infos);
 	}
 	return (NULL);
 }

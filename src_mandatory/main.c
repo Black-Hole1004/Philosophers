@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:47:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/15 18:54:08 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/16 16:08:27 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	my_usleep(size_t time)
 	{
 		if ((get_time_ms() - now) >= time)
 			break ;
-		usleep(15);
+		usleep(30);
 	}
 }
 

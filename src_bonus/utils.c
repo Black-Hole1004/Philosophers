@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 18:58:13 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/16 14:58:03 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/16 18:08:12 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ size_t	get_time_ms(void)
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
-int	time_diff(size_t t0)
+size_t	time_diff(size_t t0)
 {
 	size_t	t;
 
@@ -45,7 +45,9 @@ int	init_info(int argc, char **argv, t_info *info)
 	info->t0 = get_time_ms();
 	info->last_eat = info->t0;
 	sem_unlink("sem");
+	sem_unlink("print");
 	info->semaphores = sem_open("sem", O_CREAT, 0644, info->philo_num);
+	info->print = sem_open("print", O_CREAT, 0644, 1);
 	return (1);
 }
 
@@ -55,12 +57,13 @@ int	loop(t_info *info)
 	{
 		if ((int)(get_time_ms() - info->last_eat) >= info->time_to_die)
 		{
-			printf("%dms philo num : %d died\n",
+			printf("\033[1;31m%zums| philo num : %d died\033[0m\n",
 				time_diff(info->t0), info->index);
 			exit (DIED);
 		}
 		else if (info->time_eats != -1 && info->num_eats == info->time_eats)
 			exit (FINISHED_EATING);
+	usleep(100);
 	}
 }
 

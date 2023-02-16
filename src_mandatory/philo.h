@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:45:11 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/15 19:00:12 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/16 16:15:18 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef struct s_list
 
 void	*thread_func(void *thread);
 size_t	get_time_ms(void);
-int		time_diff(size_t t0);
+size_t	time_diff(size_t t0);
 void	put_forks(t_list *thread);
 void	take_forks(t_list *thread);
 bool	check_eats(t_info *info, t_list *philos);
