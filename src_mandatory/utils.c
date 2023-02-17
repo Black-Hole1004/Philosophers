@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/11 18:56:45 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/16 18:21:57 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/17 17:02:36 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ void	*thread_func(void	*threads)
 		thread->last_eat = get_time_ms();
 		thread->num_eats++;
 		put_forks(thread);
+		usleep(30);
 	}
 	return (NULL);
 }
@@ -67,6 +68,8 @@ void	destroy(t_list	**temp, t_info *info)
 	while (++i < info->philo_num)
 	{
 		if (pthread_mutex_destroy(&(*temp)->mutex))
+			return ;
+		if (pthread_mutex_destroy(&info->print))
 			return ;
 		(*temp) = (*temp)->next;
 	}

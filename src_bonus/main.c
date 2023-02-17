@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:47:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/16 18:40:44 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/17 16:14:15 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ void	take_fork(t_info *infos)
 	sem_wait(infos->print);
 	printf("\033[1;35m%zums| philo num: %d has taken a fork\033[0m\n",
 		time_diff(infos->t0), infos->index);
-	printf("\033[1;34m%zums| philo num: %d is eating\0331m\n",
+	printf("\033[1;34m%zums| philo num: %d is eating\033[0m\n",
 		time_diff(infos->t0), infos->index);
 	sem_post(infos->print);
 	my_usleep(infos->time_to_eat);
@@ -55,14 +55,20 @@ void	loop_wait(t_info info)
 		{
 			printf("\033[1;32m All philosophers ate %d times\n\033[0m", info.time_eats);
 			sem_close(info.semaphores);
+			sem_close(info.print);
 			sem_unlink("sem");
+			sem_unlink("print");
+			my_usleep(500);
 			kill(0, SIGINT);
 		}
 		waitpid(-1, &status, 0);
 		if (WEXITSTATUS(status) == DIED)
 		{
 			sem_close(info.semaphores);
+			sem_close(info.print);
 			sem_unlink("sem");
+			sem_unlink("print");
+			my_usleep(500);
 			kill(0, SIGINT);
 		}
 		else if (WEXITSTATUS(status) == FINISHED_EATING)

@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 18:58:13 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/16 18:08:12 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/17 14:46:13 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,10 @@ int	loop(t_info *info)
 	{
 		if ((int)(get_time_ms() - info->last_eat) >= info->time_to_die)
 		{
+			sem_wait(info->print);
 			printf("\033[1;31m%zums| philo num : %d died\033[0m\n",
 				time_diff(info->t0), info->index);
+			sem_post(info->print);
 			exit (DIED);
 		}
 		else if (info->time_eats != -1 && info->num_eats == info->time_eats)

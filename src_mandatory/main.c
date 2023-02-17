@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:47:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/16 16:08:27 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/17 18:25:47 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,6 @@ int	main(int argc, char **argv)
 {
 	t_info	info;
 	t_list	philos;
-	int		i;
 
 	if (argc < 5 || argc > 6 || pars(argc, argv) == -1)
 	{
@@ -44,7 +43,6 @@ int	main(int argc, char **argv)
 	if (!init_info(argc, argv, &info))
 		return (0);
 	philos = *get_list(&philos, &info);
-	i = 0;
 	loop(&philos, info);
 	return (0);
 }

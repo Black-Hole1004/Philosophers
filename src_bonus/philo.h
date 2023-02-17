@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:45:11 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/16 18:41:07 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/17 16:46:38 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,6 @@
 
 # define DIED			  1
 # define FINISHED_EATING  2
-# define B                "\u001b[30m"
-# define R                "\u001b[31m"
-# define G                "\u001b[32m"
-# define Y                "\u001b[33m"
-# define Bu               "\u001b[34m"
-# define M                "\u001b[35m"
-# define C                "\u001b[36m"
-# define W                "\u001b[37m"
-# define Re               "\u001b[0m"
 
 typedef struct s_info
 {

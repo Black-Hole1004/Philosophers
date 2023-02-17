@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:45:11 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/16 16:15:18 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/17 16:20:36 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ typedef struct s_info
 	size_t			t0;
 	bool			stop;
 	int				eats;
+	pthread_mutex_t	print;
 }			t_info;
 
 typedef struct s_list

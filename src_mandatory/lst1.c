@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 17:24:17 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/16 18:20:20 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/17 16:20:47 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,9 +68,13 @@ t_list	*ft_lstlast(t_list *lst)
 
 void	put_forks(t_list *thread)
 {
+	pthread_mutex_lock(&thread->info->print);
 	printf("\033[1;36m%zums| philo num: %d is sleeping\033[0m\n",
 		time_diff(thread->info->t0), thread->index);
+	pthread_mutex_unlock(&thread->info->print);
 	my_usleep(thread->info->time_to_sleep);
+	pthread_mutex_lock(&thread->info->print);
 	printf("\033[1;37m%zums| philo num: %d is thinking\033[0m\n",
 		time_diff(thread->info->t0), thread->index);
+	pthread_mutex_unlock(&thread->info->print);
 }

@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 17:24:22 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/16 18:23:34 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/17 16:59:04 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,19 +68,26 @@ int	loop(t_list *temp, t_info info)
 	{
 		if ((int)(get_time_ms() - temp->last_eat) >= info.time_to_die)
 		{
-			info.stop = 1;
+			// info.stop = 1;
 			printf("\033[1;31m%zums| philo num : %d died\033[0m\n",
 				time_diff(info.t0), temp->index);
-			return (destroy(&temp, &info), 0);
+			destroy(&temp, &info);
+			exit (0);
+			// return (destroy(&temp, &info), 0);
 		}
 		else if (info.time_eats != -1 && check_eats(&info, temp))
 		{
 			info.stop = 1;
+			// pthread_mutex_lock(&info.print);
 			my_usleep(1);
 			printf("\033[1;32m All philosophers ate %d times\n\033[0m", info.time_eats);
-			return (destroy(&temp, &info), 0);
+			// pthread_mutex_unlock(&info.print);
+			destroy(&temp, &info);
+			exit (0);
+			// return (destroy(&temp, &info), 0);
 		}
 		temp = temp->next;
+		usleep(100);
 	}
 }
 
@@ -88,13 +95,17 @@ void	take_forks(t_list *thread)
 {
 	pthread_mutex_lock(&thread->mutex);
 	pthread_mutex_lock(&thread->next->mutex);
-	my_usleep(1);
+	// my_usleep(2);
 	if (thread->info->stop)
 		return ;
+	pthread_mutex_lock(&thread->info->print);
 	printf("\033[1;35m%zums| philo num: %d has taken a fork\033[0m\n",
 		time_diff(thread->info->t0), thread->index);
-	printf("\033[1;34m%zums| philo num: %d is eating\0331m\n",
+	pthread_mutex_unlock(&thread->info->print);
+	pthread_mutex_lock(&thread->info->print);
+	printf("\033[1;34m%zums| philo num: %d is eating\033[0m\n",
 		time_diff(thread->info->t0), thread->index);
+	pthread_mutex_unlock(&thread->info->print);
 	my_usleep(thread->info->time_to_eat);
 	pthread_mutex_unlock(&thread->mutex);
 	pthread_mutex_unlock(&thread->next->mutex);

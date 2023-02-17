@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:40:49 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/15 18:52:44 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/17 16:21:47 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,8 @@ int	init_info(int argc, char **argv, t_info *info)
 	else
 		info->time_eats = -1;
 	info->t0 = get_time_ms();
+	if (pthread_mutex_init(&info->print, NULL))
+		return (0);
 	info->stop = 0;
 	return (1);
 }
