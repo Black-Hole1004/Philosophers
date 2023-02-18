@@ -6,11 +6,19 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:47:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/17 16:14:15 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/18 14:25:33 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	destroy(t_info info)
+{
+	sem_close(info.semaphores);
+	sem_close(info.print);
+	sem_unlink("sem");
+	sem_unlink("print");
+}
 
 void	put_fork(t_info *infos)
 {
@@ -23,8 +31,6 @@ void	put_fork(t_info *infos)
 	printf("\033[1;37m%zums| philo num: %d is thinking\033[0m\n",
 		time_diff(infos->t0), infos->index);
 	sem_post(infos->print);
-
-	// usleep(100);
 }
 
 void	take_fork(t_info *infos)
@@ -53,21 +59,16 @@ void	loop_wait(t_info info)
 	{
 		if (eats == info.time_eats)
 		{
-			printf("\033[1;32m All philosophers ate %d times\n\033[0m", info.time_eats);
-			sem_close(info.semaphores);
-			sem_close(info.print);
-			sem_unlink("sem");
-			sem_unlink("print");
+			printf("\033[1;32m All philosophers ate %d times\n\033[0m",
+				info.time_eats);
+			destroy_sem(info);
 			my_usleep(500);
 			kill(0, SIGINT);
 		}
 		waitpid(-1, &status, 0);
 		if (WEXITSTATUS(status) == DIED)
 		{
-			sem_close(info.semaphores);
-			sem_close(info.print);
-			sem_unlink("sem");
-			sem_unlink("print");
+			destroy_sem(info);
 			my_usleep(500);
 			kill(0, SIGINT);
 		}

@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 17:24:22 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/17 16:59:04 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/18 14:26:34 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,23 +68,19 @@ int	loop(t_list *temp, t_info info)
 	{
 		if ((int)(get_time_ms() - temp->last_eat) >= info.time_to_die)
 		{
-			// info.stop = 1;
 			printf("\033[1;31m%zums| philo num : %d died\033[0m\n",
 				time_diff(info.t0), temp->index);
 			destroy(&temp, &info);
 			exit (0);
-			// return (destroy(&temp, &info), 0);
 		}
 		else if (info.time_eats != -1 && check_eats(&info, temp))
 		{
 			info.stop = 1;
-			// pthread_mutex_lock(&info.print);
 			my_usleep(1);
-			printf("\033[1;32m All philosophers ate %d times\n\033[0m", info.time_eats);
-			// pthread_mutex_unlock(&info.print);
+			printf("\033[1;32m All philosophers ate %d times\n\033[0m",
+				info.time_eats);
 			destroy(&temp, &info);
 			exit (0);
-			// return (destroy(&temp, &info), 0);
 		}
 		temp = temp->next;
 		usleep(100);
@@ -95,7 +91,6 @@ void	take_forks(t_list *thread)
 {
 	pthread_mutex_lock(&thread->mutex);
 	pthread_mutex_lock(&thread->next->mutex);
-	// my_usleep(2);
 	if (thread->info->stop)
 		return ;
 	pthread_mutex_lock(&thread->info->print);

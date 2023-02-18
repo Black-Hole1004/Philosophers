@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/14 18:58:13 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/17 14:46:13 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/18 14:24:33 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ int	loop(t_info *info)
 		}
 		else if (info->time_eats != -1 && info->num_eats == info->time_eats)
 			exit (FINISHED_EATING);
-	usleep(100);
+		usleep(100);
 	}
 }
 
