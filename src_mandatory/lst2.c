@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/01 17:24:22 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/18 14:26:34 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/20 12:18:25 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ int	loop(t_list *temp, t_info info)
 	{
 		if ((int)(get_time_ms() - temp->last_eat) >= info.time_to_die)
 		{
+			pthread_mutex_lock(&temp->info->print);
 			printf("\033[1;31m%zums| philo num : %d died\033[0m\n",
 				time_diff(info.t0), temp->index);
 			destroy(&temp, &info);

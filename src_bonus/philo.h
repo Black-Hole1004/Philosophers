@@ -6,7 +6,7 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:45:11 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/17 16:46:38 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/19 12:14:45 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,5 @@ int		loop(t_info *info);
 void	create_processes(t_info *info);
 void	take_fork(t_info *infos);
 void	put_fork(t_info *infos);
+void	destroy_sem(t_info info);
 #endif

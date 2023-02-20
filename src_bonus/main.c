@@ -6,13 +6,13 @@
 /*   By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/31 17:47:20 by ahmaymou          #+#    #+#             */
-/*   Updated: 2023/02/18 14:25:33 by ahmaymou         ###   ########.fr       */
+/*   Updated: 2023/02/20 12:16:42 by ahmaymou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	destroy(t_info info)
+void	destroy_sem(t_info info)
 {
 	sem_close(info.semaphores);
 	sem_close(info.print);
@@ -37,7 +37,6 @@ void	take_fork(t_info *infos)
 {
 	sem_wait(infos->semaphores);
 	sem_wait(infos->semaphores);
-	my_usleep(3);
 	sem_wait(infos->print);
 	printf("\033[1;35m%zums| philo num: %d has taken a fork\033[0m\n",
 		time_diff(infos->t0), infos->index);
@@ -62,14 +61,12 @@ void	loop_wait(t_info info)
 			printf("\033[1;32m All philosophers ate %d times\n\033[0m",
 				info.time_eats);
 			destroy_sem(info);
-			my_usleep(500);
 			kill(0, SIGINT);
 		}
 		waitpid(-1, &status, 0);
 		if (WEXITSTATUS(status) == DIED)
 		{
 			destroy_sem(info);
-			my_usleep(500);
 			kill(0, SIGINT);
 		}
 		else if (WEXITSTATUS(status) == FINISHED_EATING)
