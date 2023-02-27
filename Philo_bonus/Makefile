@@ -5,50 +5,35 @@
 #                                                     +:+ +:+         +:+      #
 #    By: ahmaymou <ahmaymou@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/01/09 14:24:42 by ahmaymou          #+#    #+#              #
-#    Updated: 2023/02/11 19:34:52 by ahmaymou         ###   ########.fr        #
+#    Created: 2023/02/24 14:53:31 by ahmaymou          #+#    #+#              #
+#    Updated: 2023/02/24 14:54:18 by ahmaymou         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = PHILOSOPHERS
+NAME = philo_bonus
 
-SRCS_OBJ = $(addprefix src_mandatory/,$(shell ls src_mandatory/ | grep .c | grep -v main))
+SRCS_OBJ = $(shell ls | grep .c | grep -v main)
 
-SRCS_OBJ_BONUS = $(addprefix src_bonus/,$(shell ls src_bonus/ | grep .c | grep -v main))
-
-SRC = $(addprefix src_mandatory/,main.c)
-
-SRC_BONUS = $(addprefix src_bonus/,main.c)
+SRC = main.c
 
 FLAGS = -Wall -Werror -Wextra
 
 CC = cc
 
-EXEC = philo
-
-EXEC_BONUS = philo_bonus
-
 OBJ = $(SRCS_OBJ:.c=.o)
-
-OBJ_BONUS = $(SRCS_OBJ_BONUS:.c=.o)
 
 all : $(NAME)
 
-%.o: %.c src_mandatory/philo.h
+%.o: %.c philo.h
 	$(CC) $(FLAGS) -c $< -o $@
 
-$(NAME) : prog
-
-prog : $(OBJ) src_mandatory/philo.h
-	$(CC) $(FLAGS) $(SRC) $(OBJ) -o $(EXEC)
-
-bonus : $(OBJ_BONUS) src_bonus/philo.h
-	$(CC) $(FLAGS) $(SRC_BONUS) $(OBJ_BONUS) -o $(EXEC_BONUS)
+$(NAME) : $(OBJ) philo.h
+	$(CC) $(FLAGS) $(SRC) $(OBJ) -o $(NAME)
 
 clean :
-	rm -rf $(OBJ) $(OBJ_BONUS)
+	rm -rf $(OBJ)
 fclean : clean
-	rm -rf $(EXEC) $(EXEC_BONUS)
+	rm -rf $(NAME)
 
 re : fclean all
 
